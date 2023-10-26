@@ -1,3 +1,4 @@
+//Archvio .gs, se pone en .js por simplicidad, va en apps script
 
 const call = {
 
@@ -95,9 +96,9 @@ const call = {
             ]
         });
         const validContact = People.People.updateContact({
-                "etag": `${(newContact.etag)}`,
-                "names": [{"givenName": `${((newContact["names"])[1]).displayName}${request.name}`}],
-            },`${newContact.resourceName}`,{updatePersonFields: "names"});
+            "etag": `${(newContact.etag)}`,
+            "names": [{ "givenName": `${((newContact["names"])[1]).displayName}${request.name}` }],
+        }, `${newContact.resourceName}`, { updatePersonFields: "names" });
         return validContact.resourceName;
     },
 
@@ -105,7 +106,7 @@ const call = {
     "getContact": (request) => {
         const contacto = People.People.get('people/' + request.id, {
             personFields: 'names,emailAddresses'
-          });
+        });
         return JSON.stringify(contacto);
     },
 }

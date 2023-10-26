@@ -1,11 +1,8 @@
 //Just some code
 
-function loadDataBase(hoja, evaluar = false, id = "14YEAsuJXlsY6TBv8nGChQcTKkgiiVS-F_TAB-OZINVY") {
-    return fetch(
-        `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?&sheet=${hoja}&tq=${encodeURIComponent(
-            "Select B, C offset 1"
-        )}`
-    )
+//Regresa un objeto de javascript, donde una columna son las keys, y otra los valores
+function loadDataBase(hoja, evaluar = false, id) {
+    return fetch(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?&sheet=${hoja}&tq=${encodeURIComponent("Select B, C offset 1")}`)
         .then((response) => response.text())
         .then((text) => {
             const rows = JSON.parse(text.slice(47, -2)).table.rows;
@@ -27,9 +24,11 @@ function loadDataBase(hoja, evaluar = false, id = "14YEAsuJXlsY6TBv8nGChQcTKkgii
         });
 }
 
-function loadDataBase(id, hoja, query = "Select *") {
-    //Carga base de datos de google sheets y la convierte a una lista
 
+
+//Carga una hoja de calculo de google sheets y regresa un array de objetos, que representan cada fila
+function loadDataBase(id, hoja, query = "Select *") {
+    
     //let query = "Select A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W, AK, AN"
     return fetch(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?&sheet=${hoja}&tq=${encodeURIComponent(query)}`)
         .then(response => response.text())
@@ -56,7 +55,8 @@ function loadDataBase(id, hoja, query = "Select *") {
 }
 
 
-function makeRequest(json, url = apiUrl) {
+//Hacer request a la "pseudoApi"
+function makeRequest(json, url) {
     return fetch(`${url}?${Object.entries(json).map((query) => `${query[0]}=${encodeURIComponent(query[1])}`).join("&")}`, { method: "GET" })
         .then((response) => response.text())
         .then((data) => {
