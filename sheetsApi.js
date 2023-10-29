@@ -15,16 +15,20 @@ const call = {
     },
 
     "csvToSheet" : (request) => {
-        
-        const folder = DriveApp.getFolderById(request.folderID)
-        const files = folder.getFiles()
-    
-        const sheetID = createSheet(request.name, request.folderID);
-    
-        var csvFile = 1
+        /*
+        {
+            type: csvToSheet
+            csvID: Id del archivo csv
+            destinoID: id de carpeta de destino
+        } 
+         */
+
         //Obtener archivo csv
+        const csvFile = DriveApp.getFileById(request.csvID)
+        //Crear tabla y guardar id
+        const sheetID = createSheet(csvFile.getName(), request.destinoID);
     
-        // Gets the first sheet of the destination spreadsheet.
+        // Abrir tabla
         const spreadSheet = SpreadsheetApp.openById(sheetID);
         let sheet = spreadSheet.getSheets()[0];
     
@@ -41,26 +45,34 @@ const call = {
         // Appends data into the sheet.
         sheet.getRange(startRow, startCol, numRows, numColumns).setValues(data);
         SpreadsheetApp.flush();
-    
         return true; // Success.
     },
 
-    "sheetToExcel" : (request) => {
+    "sheetTo" : (request) => {
+        /*
+        {
+            type: sheetTo
+            to: tipo al q se convierte
+            sheetID: Id de la tabla
+            destinoID: id de carpeta de destino
+        } 
+        */
+
         const spreadSheet = SpreadsheetApp.openById(request.sheetID);
 
-        var params = {
+        const params = {
             method: "get",
             headers: { "Authorization": "Bearer " + ScriptApp.getOAuthToken() },
             muteHttpExceptions: true
         };
     
-        const url = `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`
+        const url = `https://docs.google.com/spreadsheets/d/${request.sheetID}/export?format=${request.to}`
     
         const blob = UrlFetchApp.fetch(url, params).getBlob();
-        blob.setName(spreadSheet.getName() + ".xlsx");
+        blob.setName(`${spreadSheet.getName()}.${request.to}`);
     
-        const folder = DriveApp.getFolderById(request.folderID)
-        folder.createFile(blob)
+        const folder = DriveApp.getFolderById(request.destinoID)
+        folder.createFile(blob) //regresa el archivo
     }
     
 }
