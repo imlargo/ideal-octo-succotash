@@ -2,13 +2,13 @@
 
 const call = {
 
+    "ping": (request) => {
+        return `Pong!: ${request.text}`;
+    },
+
     "sendMail": (request) => {
         MailApp.sendEmail(request.to, request.about, request.body);
         return "Correo Enviado con exito!"
-    },
-
-    "ping": (request) => {
-        return `Pong!: ${request.text}`;
     },
 
     "saveUser": (request) => {
