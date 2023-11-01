@@ -31,31 +31,29 @@ function loadObject(hoja, id, query = "Select *") {
 }
 
 function loadRows(hoja, id, query = "Select *") {
-    //Carga una hoja de calculo de google sheets y regresa un array de objetos, que representan cada fila
-    return fetch(sheetsQuery(hoja, id, query))
-        .then(response => response.text())
-        .then(text => {
-            //Cargar Datos
-            const rawdata = text.slice(47, -2);
-            const data = ((JSON.parse(rawdata)).table);
+  //Carga una hoja de calculo de google sheets y regresa un array de objetos, que representan cada fila
+  return fetch(sheetsQuery(hoja, id, query))
+      .then(response => response.text())
+      .then(text => {
+          //Cargar Datos
+          const rawdata = text.slice(47, -2);
+          const data = ((JSON.parse(rawdata)).table);
 
-            //Titulos de columnas y Obtener columnas
-            const cols = (data.cols);
-            const Keys = cols.map(col => col.label);
-            const rows = data.rows;
+          //Titulos de columnas y Obtener columnas
+          const Keys = (data.rows[0].c).map(c => c.v);
+          const rows = data.rows;
 
-            //Regresar Objeto (Diccionario Json)
-            const Objeto = [];
-            for (const row of rows) {
-                const raw = (row.c)
-                const rowinfo = raw.map(dic => (dic && dic.v) ? dic.v : "Nn");
-                const caso = Object.fromEntries(Keys.map((key, i) => [key, rowinfo[i]]));
-                Objeto.push(caso)
-            }
-            return Objeto
-        })
+          //Regresar Objeto (Diccionario Json)
+          const Objeto = [];
+          for (const row of rows) {
+              const raw = (row.c)
+              const rowinfo = raw.map(dic => (dic && dic.v) ? dic.v : "Nn");
+              const caso = Object.fromEntries(Keys.map((key, i) => [key, rowinfo[i]]));
+              Objeto.push(caso)
+          }
+          return Objeto
+      })
 }
-
 
 //Regresa un objeto de javascript, donde una columna son las keys, y otra los valores
 function loadJson(hoja, evaluar = false, id) {
